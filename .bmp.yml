@@ -1,0 +1,7 @@
+version: 0.1.0-next.1
+commit: "chore: bump to v%.%.%"
+files:
+  README.md:
+    - "@bbcwqx/live-server@%.%.%"
+    - "@bbcwqx/live-server %.%.%"
+  deno.json: '"version": "%.%.%",'
