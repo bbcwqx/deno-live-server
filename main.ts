@@ -155,11 +155,16 @@ function main() {
 
     if (response.headers.get("content-type")?.includes("text/html")) {
       const html = await response.text();
-      const modifiedHtml = html.replace(
-        "</body>",
-        `<script>${clientScript}</script>
+      let modifiedHtml: string;
+      if (html.includes("</body>")) {
+        modifiedHtml = html.replace(
+          "</body>",
+          `<script>${CLIENT_SCRIPT}</script>
         </body>`,
-      );
+        );
+      } else {
+        modifiedHtml = html + `<script>${CLIENT_SCRIPT}</script>`;
+      }
 
       const headers = new Headers(response.headers);
       headers.set("content-type", "text/html; charset=utf-8");
@@ -254,7 +259,7 @@ function js(strings: TemplateStringsArray, ...values: unknown[]): string {
   return strings.reduce((acc, str, i) => acc + str + (values[i] ?? ""), "");
 }
 
-const clientScript = js`
+const CLIENT_SCRIPT = js`
 (() => {
   /**
    * @type {WebSocket | undefined}

@@ -1,2 +1,6 @@
 .DS_Store
-*.html
+node_modules/
+
+.tmp/
+test-results/
+playwright-report/
