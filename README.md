@@ -3,15 +3,15 @@
 A live server implementation written written in Deno to reload static html pages
 when target files change
 
-Run
+## run
 
 ```bash
 deno run --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server
 ```
 
-allow-sys is optional, it is used to get the local IP address of the machine
+`allow-sys` is optional, it is used to get the local IP address of the machine
 
-Install
+## install
 
 ```bash
 deno install --allow-net --allow-read --allow-sys --global jsr:@bbcwqx/live-server
@@ -23,6 +23,8 @@ live-server
 # - Local: http://localhost:8080
 # - Network: http://192.168.4.65:8080
 ```
+
+## usage
 
 ```bash
 @bbcwqx/live-server 0.1.0-next.1
