@@ -12,5 +12,5 @@
     "@std/path": "jsr:@std/path@^1.1.1"
   },
   "exports": "./main.ts",
-  "exclude": [".github"]
+  "exclude": [".github", ".bmp.yml"]
 }
