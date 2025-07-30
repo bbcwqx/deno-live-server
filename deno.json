@@ -1,6 +1,6 @@
 {
   "name": "@bbcwqx/live-server",
-  "version": "0.2.0-next.1",
+  "version": "0.2.0",
   "tasks": {
     "dev": "deno run --watch --no-clear-screen -RN main.ts",
     "version": "deno run -RWE --no-lock --allow-run=\"git\" jsr:@kt3k/bmp"
