@@ -99,9 +99,6 @@ function main() {
   const host = serverArgs.host;
   const certFile = serverArgs.cert;
   const keyFile = serverArgs.key;
-  const clientScript = Deno.readTextFileSync(
-    new URL("client.js", import.meta.url).pathname,
-  );
 
   const NET_PERM_STATUS =
     Deno.permissions.querySync?.({ name: "sys", kind: "networkInterfaces" })
@@ -252,6 +249,62 @@ OPTIONS:
 
   All TLS options are required when one is provided.`);
 }
+
+function js(strings: TemplateStringsArray, ...values: unknown[]): string {
+  return strings.reduce((acc, str, i) => acc + str + (values[i] ?? ""), "");
+}
+
+const clientScript = js`
+(() => {
+  /**
+   * @type {WebSocket | undefined}
+   */
+  let socket;
+
+  /**
+   * @type {number | undefined}
+   */
+  let reconnectionTimerId;
+
+  connect();
+
+  function reload() {
+    globalThis.location.reload();
+  }
+
+  /**
+   * Connects to the WebSocket server
+   * @param {(() => void) | undefined} callback - Optional callback to execute on connection open
+   * @returns {void}
+   */
+  function connect(callback) {
+    if (socket) {
+      socket.close();
+    }
+
+    socket = new WebSocket(\`\${globalThis.location.origin.replace("http", "ws")}/@bbcwqx/live-server\`);
+
+    socket.addEventListener("open", callback);
+
+    socket.addEventListener("message", (event) => {
+      if (event.data === "reload") {
+        console.log("reloading...");
+        reload();
+      }
+    });
+
+    socket.addEventListener("close", () => {
+      console.log("reconnecting...");
+
+      clearTimeout(reconnectionTimerId);
+
+      reconnectionTimerId = setTimeout(() => {
+        connect(reload);
+      }, 1000);
+    });
+  }
+})();
+`;
 
 if (import.meta.main) {
   main();
