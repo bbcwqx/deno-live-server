@@ -54,5 +54,5 @@ OPTIONS:
   -v, --verbose         Print request level logs
   -V, --version         Print version information
 
-  All TLS options are required when one is provided.`);
+  All TLS options are required when one is provided.
 ```
