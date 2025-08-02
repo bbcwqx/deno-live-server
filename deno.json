@@ -1,16 +1,22 @@
 {
   "name": "@bbcwqx/live-server",
-  "version": "0.2.0",
+  "version": "0.2.1",
+  "exports": "./main.ts",
   "tasks": {
     "dev": "deno run --watch --no-clear-screen -RN main.ts",
-    "version": "deno run -RWE --no-lock --allow-run=\"git\" jsr:@kt3k/bmp"
+    "version": "deno run -RWE --no-lock --allow-run=\"git\" jsr:@kt3k/bmp",
+    "playwright": "deno run -A --node-modules-dir npm:playwright",
+    "test": "deno task playwright test"
   },
   "imports": {
+    "@playwright/test": "npm:@playwright/test@^1.54.1",
     "@std/cli": "jsr:@std/cli@^1.0.21",
     "@std/http": "jsr:@std/http@^1.0.20",
     "@std/net": "jsr:@std/net@^1.0.4",
     "@std/path": "jsr:@std/path@^1.1.1"
   },
-  "exports": "./main.ts",
-  "exclude": [".github", ".bmp.yml"]
+  "exclude": ["vendor"],
+  "publish": {
+    "include": ["main.ts", "client.js", "deno.json", "README.md", "LICENSE"]
+  }
 }
