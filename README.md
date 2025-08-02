@@ -2,8 +2,8 @@
 
 [![JSR](https://jsr.io/badges/@bbcwqx/live-server)](https://jsr.io/@bbcwqx/live-server)
 
-A live server implementation written written in Deno to reload static html pages
-when target files change
+A live server implementation written in Deno to reload static html pages when
+target files change
 
 ## run
 
