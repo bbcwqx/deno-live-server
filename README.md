@@ -1,4 +1,4 @@
-# deno live server
+# live server
 
 [![JSR](https://jsr.io/badges/@bbcwqx/live-server)](https://jsr.io/@bbcwqx/live-server)
 
