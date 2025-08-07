@@ -10,76 +10,72 @@ export interface LiveServerFixture {
 export const test = base.extend<LiveServerFixture>({
   // deno-lint-ignore no-empty-pattern
   liveServer: async ({}, use) => {
-    const liveServer = async () => {
-      const tempDir = await Deno.makeTempDir({ "prefix": "deno-live-server-" });
-      const abortController = new AbortController();
+    const tempDir = await Deno.makeTempDir({ "prefix": "deno-live-server-" });
+    const abortController = new AbortController();
 
-      await Deno.writeTextFile(
-        `${tempDir}/index.html`,
-        "<p id='test'>hello</p>",
+    await Deno.writeTextFile(
+      `${tempDir}/index.html`,
+      "<p id='test'>hello</p>",
+    );
+
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
+        "run",
+        "--allow-read",
+        "--allow-net",
+        "./main.ts",
+        tempDir,
+      ],
+      stdout: "piped",
+      stderr: "piped",
+    });
+
+    const process = command.spawn();
+
+    process.status.then((status) => {
+      if (!status.success && !abortController.signal.aborted) {
+        throw new Error(`Server exited with code ${status.code}`);
+      }
+    });
+
+    process.stdout
+      .pipeThrough(new TextDecoderStream())
+      .pipeThrough(new TextLineStream({ allowCR: true }))
+      .pipeTo(
+        new WritableStream({
+          write: (line) => {
+            if (line) {
+              console.log(`[webserver] ${line}`);
+            }
+          },
+        }),
       );
 
-      const command = new Deno.Command(Deno.execPath(), {
-        args: [
-          "run",
-          "--allow-read",
-          "--allow-net",
-          "./main.ts",
-          tempDir,
-        ],
-        stdout: "piped",
-        stderr: "piped",
-      });
+    process.stderr
+      .pipeThrough(new TextDecoderStream())
+      .pipeThrough(new TextLineStream({ allowCR: true }))
+      .pipeTo(
+        new WritableStream({
+          write: (line) => {
+            if (line) {
+              console.error(`[webserver] ${line}`);
+            }
+          },
+        }),
+      );
 
-      const process = command.spawn();
+    await waitForServer();
 
-      process.status.then((status) => {
-        if (!status.success && !abortController.signal.aborted) {
-          throw new Error(`Server exited with code ${status.code}`);
-        }
-      });
-
-      process.stdout
-        .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new TextLineStream({ allowCR: true }))
-        .pipeTo(
-          new WritableStream({
-            write: (line) => {
-              if (line) {
-                console.log(`[webserver] ${line}`);
-              }
-            },
-          }),
-        );
-
-      process.stderr
-        .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new TextLineStream({ allowCR: true }))
-        .pipeTo(
-          new WritableStream({
-            write: (line) => {
-              if (line) {
-                console.error(`[webserver] ${line}`);
-              }
-            },
-          }),
-        );
-
-      await waitForServer();
-
+    try {
+      await use(() => Promise.resolve({ tempDir }));
+    } finally {
+      abortController.abort();
       try {
-        await use(() => Promise.resolve({ tempDir }));
-      } finally {
-        abortController.abort();
-        try {
-          await Deno.remove(tempDir, { recursive: true });
-        } catch {
-          // ignore
-        }
+        await Deno.remove(tempDir, { recursive: true });
+      } catch {
+        // ignore
       }
-    };
-
-    await liveServer();
+    }
   },
 });
 
