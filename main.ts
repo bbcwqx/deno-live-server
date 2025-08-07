@@ -32,6 +32,9 @@ import { getNetworkAddress } from "@std/net/unstable-get-network-address";
 import { resolve } from "@std/path/resolve";
 import denoConfig from "./deno.json" with { type: "json" };
 
+const HTTP_PORT = 8080;
+const HTTPS_PORT = 8443;
+const HOST = "0.0.0.0";
 const sockets: Set<WebSocket> = new Set();
 
 async function watch(path: string = "./") {
@@ -79,7 +82,7 @@ function main() {
       cors: true,
       verbose: false,
       version: false,
-      host: "0.0.0.0",
+      host: HOST,
       port: undefined,
       cert: "",
       key: "",
@@ -186,7 +189,7 @@ function main() {
   const useTls = !!(keyFile && certFile);
 
   if (port === undefined) {
-    port = useTls ? 8443 : 8080;
+    port = useTls ? HTTPS_PORT : HTTP_PORT;
   }
 
   function onListen({ port, hostname }: { port: number; hostname: string }) {
@@ -238,9 +241,9 @@ USAGE:
 
 OPTIONS:
   -h, --help            Prints help information
-  -p, --port <PORT>     Set port (default is 8000)
+  -p, --port <PORT>     Set port (default is ${HTTP_PORT} or ${HTTPS_PORT} for TLS)
   --cors                Enable CORS via the "Access-Control-Allow-Origin" header
-  --host     <HOST>     Hostname (default is 0.0.0.0)
+  --host     <HOST>     Hostname (default is ${HOST})
   -c, --cert <FILE>     TLS certificate file (enables TLS)
   -k, --key  <FILE>     TLS key file (enables TLS)
   -H, --header <HEADER> Sets a header on every request.
