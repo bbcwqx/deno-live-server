@@ -4,17 +4,15 @@ import { TextLineStream } from "../vendor/jsr.io/@std/streams/1.0.10/text_line_s
 export interface LiveServerFixture {
   liveServer: () => Promise<{
     tempDir: string;
-    process: Deno.ChildProcess;
   }>;
 }
 
 export const test = base.extend<LiveServerFixture>({
-  liveServer: async ({ page: _ }, use) => {
-    let process: Deno.ChildProcess | null = null;
-    let tempDir: string | null = null;
-
+  // deno-lint-ignore no-empty-pattern
+  liveServer: async ({}, use) => {
     const liveServer = async () => {
-      tempDir = await Deno.makeTempDir({ "prefix": "deno-live-server-" });
+      const tempDir = await Deno.makeTempDir({ "prefix": "deno-live-server-" });
+      const abortController = new AbortController();
 
       await Deno.writeTextFile(
         `${tempDir}/index.html`,
@@ -33,7 +31,13 @@ export const test = base.extend<LiveServerFixture>({
         stderr: "piped",
       });
 
-      process = command.spawn();
+      const process = command.spawn();
+
+      process.status.then((status) => {
+        if (!status.success && !abortController!.signal.aborted) {
+          throw new Error(`Server exited with code ${status.code}`);
+        }
+      });
 
       process.stdout
         .pipeThrough(new TextDecoderStream())
@@ -63,31 +67,19 @@ export const test = base.extend<LiveServerFixture>({
 
       await waitForServer();
 
-      return {
-        tempDir,
-        process,
-      };
+      try {
+        await use(() => Promise.resolve({ tempDir }));
+      } finally {
+        abortController.abort();
+        try {
+          await Deno.remove(tempDir, { recursive: true });
+        } catch {
+          // ignore
+        }
+      }
     };
 
-    await use(liveServer);
-
-    if (process) {
-      process = process as Deno.ChildProcess;
-      try {
-        process.kill();
-        await process.status;
-      } catch {
-        // Ignore
-      }
-    }
-
-    if (tempDir) {
-      try {
-        await Deno.remove(tempDir, { recursive: true });
-      } catch {
-        // Ignore
-      }
-    }
+    await liveServer();
   },
 });
 
