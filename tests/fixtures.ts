@@ -34,7 +34,7 @@ export const test = base.extend<LiveServerFixture>({
       const process = command.spawn();
 
       process.status.then((status) => {
-        if (!status.success && !abortController!.signal.aborted) {
+        if (!status.success && !abortController.signal.aborted) {
           throw new Error(`Server exited with code ${status.code}`);
         }
       });
