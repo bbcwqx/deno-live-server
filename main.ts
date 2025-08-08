@@ -30,6 +30,7 @@ import { parseArgs } from "@std/cli";
 import { serveDir } from "@std/http";
 import { getNetworkAddress } from "@std/net/unstable-get-network-address";
 import { resolve } from "@std/path/resolve";
+import CLIENT_SCRIPT from "./client.js";
 import denoConfig from "./deno.json" with { type: "json" };
 
 const HTTP_PORT = 8080;
@@ -257,62 +258,6 @@ OPTIONS:
 
   All TLS options are required when one is provided.`);
 }
-
-function js(strings: TemplateStringsArray, ...values: unknown[]): string {
-  return strings.reduce((acc, str, i) => acc + str + (values[i] ?? ""), "");
-}
-
-const CLIENT_SCRIPT = js`
-(() => {
-  /**
-   * @type {WebSocket | undefined}
-   */
-  let socket;
-
-  /**
-   * @type {number | undefined}
-   */
-  let reconnectionTimerId;
-
-  connect();
-
-  function reload() {
-    globalThis.location.reload();
-  }
-
-  /**
-   * Connects to the WebSocket server
-   * @param {(() => void) | undefined} callback - Optional callback to execute on connection open
-   * @returns {void}
-   */
-  function connect(callback) {
-    if (socket) {
-      socket.close();
-    }
-
-    socket = new WebSocket(\`\${globalThis.location.origin.replace("http", "ws")}/@bbcwqx/live-server\`);
-
-    socket.addEventListener("open", callback);
-
-    socket.addEventListener("message", (event) => {
-      if (event.data === "reload") {
-        console.log("reloading...");
-        reload();
-      }
-    });
-
-    socket.addEventListener("close", () => {
-      console.log("reconnecting...");
-
-      clearTimeout(reconnectionTimerId);
-
-      reconnectionTimerId = setTimeout(() => {
-        connect(reload);
-      }, 1000);
-    });
-  }
-})();
-`;
 
 if (import.meta.main) {
   main();
