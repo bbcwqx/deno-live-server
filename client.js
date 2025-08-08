@@ -1,51 +1,5 @@
-(() => {
-  /**
-   * @type {WebSocket | undefined}
-   */
-  let socket;
-
-  /**
-   * @type {number | undefined}
-   */
-  let reconnectionTimerId;
-
-  connect();
-
-  function reload() {
-    globalThis.location.reload();
-  }
-
-  /**
-   * Connects to the WebSocket server
-   * @param {(() => void) | undefined} callback - Optional callback to execute on connection open
-   * @returns {void}
-   */
-  function connect(callback) {
-    if (socket) {
-      socket.close();
-    }
-
-    socket = new WebSocket(
-      `${globalThis.location.origin.replace("http", "ws")}/@bbcwqx/live-server`,
-    );
-
-    socket.addEventListener("open", callback);
-
-    socket.addEventListener("message", (event) => {
-      if (event.data === "reload") {
-        console.log("reloading...");
-        reload();
-      }
-    });
-
-    socket.addEventListener("close", () => {
-      console.log("reconnecting...");
-
-      clearTimeout(reconnectionTimerId);
-
-      reconnectionTimerId = setTimeout(() => {
-        connect(reload);
-      }, 1000);
-    });
-  }
-})();
+// client-raw.js
+var client_raw_default = '(() => {\n  /**\n   * @type {WebSocket | undefined}\n   */\n  let socket;\n\n  /**\n   * @type {number | undefined}\n   */\n  let reconnectionTimerId;\n\n  connect();\n\n  function reload() {\n    globalThis.location.reload();\n  }\n\n  /**\n   * Connects to the WebSocket server\n   * @param {(() => void) | undefined} callback - Optional callback to execute on connection open\n   * @returns {void}\n   */\n  function connect(callback) {\n    if (socket) {\n      socket.close();\n    }\n\n    socket = new WebSocket(\n      `${globalThis.location.origin.replace("http", "ws")}/@bbcwqx/live-server`,\n    );\n\n    socket.addEventListener("open", callback);\n\n    socket.addEventListener("message", (event) => {\n      if (event.data === "reload") {\n        console.log("reloading...");\n        reload();\n      }\n    });\n\n    socket.addEventListener("close", () => {\n      console.log("reconnecting...");\n\n      clearTimeout(reconnectionTimerId);\n\n      reconnectionTimerId = setTimeout(() => {\n        connect(reload);\n      }, 1000);\n    });\n  }\n})();\n';
+export {
+  client_raw_default as default
+};

@@ -3,7 +3,11 @@
   "version": "0.2.1",
   "exports": "./main.ts",
   "tasks": {
-    "dev": "deno run --watch --no-clear-screen -RN main.ts",
+    "dev": {
+      "dependencies": ["dev:bundle", "dev:serve"]
+    },
+    "dev:serve": "deno run --watch --no-clear-screen -RN main.ts",
+    "dev:bundle": "deno bundle --watch ./client.ts --platform browser -o client.js",
     "version": "deno run -RWE --no-lock --allow-run=\"git\" jsr:@kt3k/bmp",
     "playwright": "deno run -A --node-modules-dir npm:playwright",
     "test": "deno task playwright test"
@@ -15,7 +19,14 @@
     "@std/net": "jsr:@std/net@^1.0.4",
     "@std/path": "jsr:@std/path@^1.1.1"
   },
+  "unstable": ["raw-imports"],
   "exclude": ["vendor"],
+  "fmt": {
+    "exclude": ["client.js"]
+  },
+  "lint": {
+    "exclude": ["client.js"]
+  },
   "publish": {
     "include": ["main.ts", "client.js", "deno.json", "README.md", "LICENSE"]
   }
