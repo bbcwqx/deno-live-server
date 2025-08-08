@@ -4,6 +4,7 @@ import { TextLineStream } from "../vendor/jsr.io/@std/streams/1.0.10/text_line_s
 export interface LiveServerFixture {
   liveServer: () => Promise<{
     tempDir: string;
+    url: string;
   }>;
 }
 
@@ -25,6 +26,7 @@ export const test = base.extend<LiveServerFixture>({
         "--allow-net",
         "./main.ts",
         tempDir,
+        "--port=0",
       ],
       stdout: "piped",
       stderr: "piped",
@@ -38,6 +40,8 @@ export const test = base.extend<LiveServerFixture>({
       }
     });
 
+    let url: string | undefined;
+
     process.stdout
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new TextLineStream({ allowCR: true }))
@@ -46,6 +50,12 @@ export const test = base.extend<LiveServerFixture>({
           write: (line) => {
             if (line) {
               console.log(`[webserver] ${line}`);
+
+              const match = line.match(/Local:\s+(http:\/\/\S+)/i);
+
+              if (match) {
+                url = match[1];
+              }
             }
           },
         }),
@@ -64,10 +74,16 @@ export const test = base.extend<LiveServerFixture>({
         }),
       );
 
-    await waitForServer();
+    const start = Date.now();
+    while (!url) {
+      if (Date.now() - start > 5000) {
+        throw new Error("Timed out waiting for server to start");
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
 
     try {
-      await use(() => Promise.resolve({ tempDir }));
+      await use(() => Promise.resolve({ tempDir, url: url! }));
     } finally {
       abortController.abort();
       try {
@@ -78,34 +94,5 @@ export const test = base.extend<LiveServerFixture>({
     }
   },
 });
-
-export async function waitForServer(
-  {
-    port,
-    hostname,
-    timeout,
-    interval,
-  } = {
-    port: 8080,
-    hostname: "127.0.0.1",
-    timeout: 5000,
-    interval: 100,
-  },
-): Promise<void> {
-  const start = Date.now();
-
-  while (true) {
-    try {
-      const conn = await Deno.connect({ port, hostname });
-      conn.close();
-      return;
-    } catch {
-      if (Date.now() - start > timeout) {
-        throw new Error(`Timed out waiting for ${hostname}:${port}`);
-      }
-      await new Promise((res) => setTimeout(res, interval));
-    }
-  }
-}
 
 export { expect } from "@playwright/test";

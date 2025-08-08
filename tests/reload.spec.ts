@@ -1,9 +1,9 @@
 import { expect, test } from "./fixtures.ts";
 
 test("live reload", async ({ page, liveServer }) => {
-  const { tempDir } = await liveServer();
+  const { tempDir, url } = await liveServer();
 
-  await page.goto(`/`);
+  await page.goto(url);
 
   const webSocket = await page.waitForEvent("websocket");
 
