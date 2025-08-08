@@ -40,7 +40,7 @@ USAGE:
 
 OPTIONS:
   -h, --help            Prints help information
-  -p, --port <PORT>     Set port (default is 8080)
+  -p, --port <PORT>     Set port (default is 8080 or 8443 for TLS)
   --cors                Enable CORS via the "Access-Control-Allow-Origin" header
   --host     <HOST>     Hostname (default is 0.0.0.0)
   -c, --cert <FILE>     TLS certificate file (enables TLS)
