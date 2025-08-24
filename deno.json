@@ -4,30 +4,48 @@
   "exports": "./main.ts",
   "tasks": {
     "dev": {
-      "dependencies": ["dev:bundle", "dev:serve"]
+      "dependencies": [
+        "dev:bundle",
+        "dev:serve"
+      ]
     },
-    "dev:serve": "deno run --watch --no-clear-screen -RN main.ts",
+    "dev:serve": "deno run --watch --no-clear-screen -REN main.ts",
     "dev:bundle": "deno bundle --watch ./client.ts --platform browser -o client.js",
     "version": "deno run -RWE --no-lock --allow-run=\"git\" jsr:@kt3k/bmp",
     "playwright": "deno run -A --node-modules-dir npm:playwright",
     "test": "deno task playwright test"
   },
   "imports": {
+    "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
     "@playwright/test": "npm:@playwright/test@^1.54.1",
     "@std/cli": "jsr:@std/cli@^1.0.21",
     "@std/http": "jsr:@std/http@^1.0.20",
     "@std/net": "jsr:@std/net@^1.0.4",
     "@std/path": "jsr:@std/path@^1.1.1"
   },
-  "unstable": ["raw-imports"],
-  "exclude": ["vendor"],
+  "unstable": [
+    "raw-imports"
+  ],
+  "exclude": [
+    "vendor"
+  ],
   "fmt": {
-    "exclude": ["client.js"]
+    "exclude": [
+      "client.js"
+    ]
   },
   "lint": {
-    "exclude": ["client.js"]
+    "exclude": [
+      "client.js"
+    ]
   },
   "publish": {
-    "include": ["main.ts", "client.js", "deno.json", "README.md", "LICENSE"]
+    "include": [
+      "main.ts",
+      "client.js",
+      "deno.json",
+      "README.md",
+      "LICENSE"
+    ]
   }
 }

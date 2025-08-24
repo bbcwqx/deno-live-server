@@ -14,11 +14,6 @@ export const test = base.extend<LiveServerFixture>({
     const tempDir = await Deno.makeTempDir({ "prefix": "deno-live-server-" });
     const abortController = new AbortController();
 
-    await Deno.writeTextFile(
-      `${tempDir}/index.html`,
-      "<p id='test'>hello</p>",
-    );
-
     const command = new Deno.Command(Deno.execPath(), {
       args: [
         "run",

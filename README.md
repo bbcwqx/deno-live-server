@@ -5,6 +5,8 @@
 A live server implementation written in Deno to reload static html pages when
 target files change
 
+Live server also renders markdown files
+
 ## run
 
 ```bash
