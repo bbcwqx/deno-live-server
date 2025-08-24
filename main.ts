@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-net --allow-read
+#!/usr/bin/env -S deno run --allow-net --allow-read --allow-env
 // https://github.com/denoland/std/blob/6837d8e332f6fb321cf533b45ea3cd43bd8335f2/http/file_server.ts
 //    ^ Copyright 2018-2025 the Deno authors. MIT license.
 
