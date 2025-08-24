@@ -26,6 +26,7 @@
  * @module
  */
 
+import { CSS, render } from "@deno/gfm";
 import { parseArgs } from "@std/cli";
 import { serveDir } from "@std/http";
 import { getNetworkAddress } from "@std/net/unstable-get-network-address";
@@ -178,6 +179,43 @@ function main() {
       );
 
       return new Response(modifiedHtml, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+
+    if (response.headers.get("content-type")?.includes("text/markdown")) {
+      const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body {
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 2rem;
+            }
+            ${CSS}
+          </style>
+        </head>
+        <body data-color-mode="auto" data-light-theme="light" data-dark-theme="dark" class="markdown-body">
+            ${render(await response.text())}
+          <script>${CLIENT_SCRIPT}</script>
+        </body>
+      </html>
+      `;
+
+      const headers = new Headers(response.headers);
+      headers.set("content-type", "text/html; charset=utf-8");
+      headers.set(
+        "content-length",
+        new TextEncoder().encode(html).length.toString(),
+      );
+
+      return new Response(html, {
         status: response.status,
         statusText: response.statusText,
         headers,
