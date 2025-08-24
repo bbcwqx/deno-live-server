@@ -31,11 +31,11 @@ live-server
 ## usage
 
 ```bash
-@bbcwqx/live-server 0.2.2
+@bbcwqx/live-server 0.2.3
   Serves a local directory reloads browser when files change.
 
 INSTALL:
-  deno install --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server@0.2.2
+  deno install --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server@0.2.3
 
 USAGE:
   live-server [path] [options]
