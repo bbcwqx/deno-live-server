@@ -13,7 +13,9 @@
     "dev:bundle": "deno bundle --watch ./client.ts --platform browser -o client.js",
     "version": "deno run -RWE --no-lock --allow-run=\"git\" jsr:@kt3k/bmp",
     "playwright": "deno run -A --node-modules-dir npm:playwright",
-    "test": "deno task playwright test"
+    "test": "deno task test:unit && deno task test:e2e",
+    "test:unit": "deno test --allow-run --allow-net",
+    "test:e2e": "deno task playwright test"
   },
   "imports": {
     "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
