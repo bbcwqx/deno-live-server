@@ -1,12 +1,14 @@
 import { expect, test } from "./fixtures.ts";
 
 test("live reload", async ({ page, liveServer }) => {
-  const { tempDir, url } = await liveServer();
-
-  await Deno.writeTextFile(
-    `${tempDir}/index.html`,
-    "<p id='test'>hello</p>",
-  );
+  const { tempDir, url } = await liveServer({
+    initFiles: [
+      {
+        path: "index.html",
+        content: "<p id='test'>hello</p>",
+      },
+    ],
+  });
 
   await page.goto(url);
 
@@ -31,12 +33,14 @@ test("live reload", async ({ page, liveServer }) => {
 });
 
 test("live reload markdown", async ({ page, liveServer }) => {
-  const { tempDir, url } = await liveServer();
-
-  await Deno.writeTextFile(
-    `${tempDir}/README.md`,
-    "# hello",
-  );
+  const { tempDir, url } = await liveServer({
+    initFiles: [
+      {
+        path: "README.md",
+        content: "# hello",
+      },
+    ],
+  });
 
   await page.goto(url + "/README.md");
 
