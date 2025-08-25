@@ -10,7 +10,7 @@ Live server also renders markdown files
 ## run
 
 ```bash
-deno run --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server
+deno run --allow-net --allow-read --allow-env --allow-sys jsr:@bbcwqx/live-server
 ```
 
 `allow-sys` is optional, it is used to get the local IP address of the machine
@@ -18,7 +18,7 @@ deno run --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server
 ## install
 
 ```bash
-deno install --allow-net --allow-read --allow-sys --global jsr:@bbcwqx/live-server
+deno install --allow-net --allow-read --allow-env --allow-sys --global jsr:@bbcwqx/live-server
 ```
 
 ```bash
@@ -35,7 +35,7 @@ live-server
   Serves a local directory reloads browser when files change.
 
 INSTALL:
-  deno install --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server@0.2.4
+  deno install --allow-net --allow-read --allow-env --allow-sys jsr:@bbcwqx/live-server@0.2.4
 
 USAGE:
   live-server [path] [options]
