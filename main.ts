@@ -158,6 +158,10 @@ function main() {
       headers,
     });
 
+    if (response.status === 304) {
+      return response;
+    }
+
     if (response.headers.get("content-type")?.includes("text/html")) {
       const html = await response.text();
       let modifiedHtml: string;
