@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-net --allow-read
+#!/usr/bin/env -S deno run --allow-net --allow-read --allow-env
 // https://github.com/denoland/std/blob/6837d8e332f6fb321cf533b45ea3cd43bd8335f2/http/file_server.ts
 //    ^ Copyright 2018-2025 the Deno authors. MIT license.
 
@@ -7,7 +7,7 @@
  *
  * ```shell
  * > # start server
- * > deno run --allow-net --allow-read --allow-sys jsr:@bbcwqx/live-server
+ * > deno run --allow-net --allow-read --allow-env --allow-sys jsr:@bbcwqx/live-server
  * > # show help
  * > deno run jsr:@bbcwqx/live-server --help
  * ```
@@ -16,7 +16,7 @@
  *
  * ```shell
  * > # install
- * > deno install --allow-net --allow-read --allow-sys --global jsr:@bbcwqx/live-server
+ * > deno install --allow-net --allow-read --allow-env --allow-sys --global jsr:@bbcwqx/live-server
  * > # start server
  * > live-server
  * > # show help
@@ -273,7 +273,7 @@ function printUsage() {
   Serves a local directory reloads browser when files change.
 
 INSTALL:
-  deno install --allow-net --allow-read --allow-sys jsr:${denoConfig.name}@${denoConfig.version}
+  deno install --allow-net --allow-read --allow-env --allow-sys jsr:${denoConfig.name}@${denoConfig.version}
 
 USAGE:
   live-server [path] [options]
